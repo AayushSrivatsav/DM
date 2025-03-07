@@ -177,3 +177,20 @@ print(f"\nPrediction: {predict_with_original_values('Sunny', 'Hot', 'High', 'Wea
 print(f"Prediction: {predict_with_original_values('Rain', 'Cool', 'Normal', 'Weak')}")
 print(f"Prediction: {predict_with_original_values('Sunny', 'Cool', 'Normal', 'Strong')}")
 print("#----------------------------------------------------------------------\n\n")
+
+
+#rules
+def extract_rules(tree, feature_names, current_rule="IF ", rules=[]):
+    for key, value in tree.items():
+        feature = feature_names[key]
+        for sub_key, sub_value in value.items():
+            new_rule = f"{current_rule} {feature} == {sub_key}"
+            if isinstance(sub_value, dict):
+                extract_rules(sub_value, feature_names, new_rule + " AND", rules)
+            else:
+                rules.append(f"{new_rule} THEN Play = {sub_value}")
+    return rules
+
+rules = extract_rules(tree.tree, feature_names)
+for rule in rules:
+  print(rule)
